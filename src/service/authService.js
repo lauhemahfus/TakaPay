@@ -1,7 +1,7 @@
 import { db } from "../config/prisma.js";
 import { hashPassword } from "../utils/password.js";
 
-export async function createUser (userInfo) {
+export const createUser = async (userInfo) => {
     try {
         const hashedPassword = await hashPassword(userInfo.password);
         console.log(hashedPassword);
@@ -18,4 +18,12 @@ export async function createUser (userInfo) {
     } catch (error) {
         return error;
     }
+}
+
+export const findUser = async (email) => {
+    return await db.user.findFirst({
+        where: {
+            email: email
+        }
+    });
 }
