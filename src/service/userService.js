@@ -20,10 +20,18 @@ export const createUser = async (userInfo) => {
     }
 }
 
-export const findUser = async (email) => {
+export const findUserByEmail = async (email) => {
     return await db.user.findFirst({
         where: {
             email: email
+        }
+    });
+}
+
+export const findUserByID = async (id) => {
+    return await db.user.findFirst({
+        where: {
+            id: id
         }
     });
 }
