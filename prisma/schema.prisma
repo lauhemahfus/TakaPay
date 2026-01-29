@@ -30,28 +30,42 @@ model Wallet {
   userId               Int           @unique
   balance              Decimal       @default(0) @db.Decimal(18, 3)
   status               WalletStatus  @default(ACTIVE)
-  sentTransactions     Transaction[] @relation("SentTransactions")
-  receivedTransactions Transaction[] @relation("ReceivedTransactions")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+
+  sentP2PTransactions     P2PTransaction[] @relation("SentP2PTransactions")
+  receivedP2PTransactions P2PTransaction[] @relation("ReceivedP2PTransactions")
+  cashTransactions        CashTransaction[]
 }
 
-model Transaction {
-  id               Int               @id @default(autoincrement())
-  amount           Decimal           @db.Decimal(18, 3)
+model P2PTransaction {
+  id            Int               @id @default(autoincrement())
   senderWalletId   Int
   receiverWalletId Int
-  type             TransactionType
-  status           TransactionStatus @default(COMPLETED)
-  description      String?
+  amount        Decimal           @db.Decimal(18, 3)
+  status        TransactionStatus @default(COMPLETED)
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  senderWallet   Wallet @relation("SentP2PTransactions", fields: [senderWalletId], references: [id])
+  receiverWallet Wallet @relation("ReceivedP2PTransactions", fields: [receiverWalletId], references: [id])
+}
+
+model CashTransaction {
+  id        Int      @id @default(autoincrement())
+  walletId  Int
+  amount    Decimal  @db.Decimal(18, 3)
+  type      CashTransactionType 
+  status    TransactionStatus @default(COMPLETED)
+  description String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  senderWallet   Wallet @relation("SentTransactions", fields: [senderWalletId], references: [id])
-  receiverWallet Wallet @relation("ReceivedTransactions", fields: [receiverWalletId], references: [id])
+  wallet Wallet @relation(fields: [walletId], references: [id])
 }
 
 
@@ -67,8 +81,7 @@ enum WalletStatus {
   PAUSED
 }
 
-enum TransactionType {
-  P2P
+enum CashTransactionType {
   CASH_IN
   CASH_OUT
 }
