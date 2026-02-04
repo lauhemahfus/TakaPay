@@ -1,4 +1,5 @@
 import { createUser, findUserByEmail, findUserByID } from "../service/userService.js";
+import { createWalletForUser } from "../service/walletService.js";
 import { generateToken } from "../utils/jwt.js";
 import { verifyPassword } from "../utils/password.js";
 
@@ -15,11 +16,14 @@ export const register = async (req, res) => {
         }
 
         const user = await createUser({name, email, phone, password});
+        const wallet = await createWalletForUser(user.id);
+        
         return res.status(201).json({
             success: true,
             message: "Signup successful",
             user: {
                 id: user.id,
+                wallet_id: wallet.id,
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
@@ -86,7 +90,10 @@ export const getMe = async (req, res, next) => {
     try {
         const id = req.user.id;
         if(!id){
-
+            return res.status(400).json({
+                success: false,
+                message: "User not login"
+            });
         }
         const user = await findUserByID(id);
         return res.status(200).json({

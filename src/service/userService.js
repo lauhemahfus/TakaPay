@@ -4,7 +4,6 @@ import { hashPassword } from "../utils/password.js";
 export const createUser = async (userInfo) => {
     try {
         const hashedPassword = await hashPassword(userInfo.password);
-        console.log(hashedPassword);
         
         return db.user.create({
             data:{
