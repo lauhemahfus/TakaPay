@@ -3,7 +3,7 @@ import { db } from "../config/prisma.js";
 export const createWalletForUser = async (userId) => {
     try {
         
-        return db.wallet.create({
+        return await db.wallet.create({
             data:{
                 userId: userId
             }
@@ -17,7 +17,7 @@ export const createWalletForUser = async (userId) => {
 
 export const findWalletByUserId = async (userId) => {
     try {
-        return db.wallet.findUnique({
+        return await db.wallet.findUnique({
             where: {
                 userId: userId
             }

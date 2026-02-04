@@ -16,6 +16,7 @@ export const getMyWallet = async (req, res, next) => {
                 message: "No wallet found"
             });
         }
+
         
         return res.status(200).json({
             success: true,

@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import { authRoutes } from './routes/authRoutes.js';
 import { walletRoutes } from './routes/walletRoutes.js';
+import { transactionRoutes } from './routes/transactionRoutes.js';
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/transaction', transactionRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
