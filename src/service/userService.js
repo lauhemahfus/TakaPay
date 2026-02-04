@@ -30,7 +30,7 @@ export const findUserByEmail = async (email) => {
 export const findUserByPhone = async (phone) => {
     return await db.user.findFirst({
         where: {
-            phone: String(phone)
+            phone: phone
         }
     });
 }
