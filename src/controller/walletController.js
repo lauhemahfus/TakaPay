@@ -1,3 +1,4 @@
+import { getAllHistory, getCashHistory, getP2PHistory } from "../service/transactionService.js";
 import { findWalletByUserId, updateWalletStatus } from "../service/walletService.js";
 
 export const getMyWallet = async (req, res, next) => {
@@ -125,6 +126,119 @@ export const unpauseMyWallet = async (req, res, next) => {
         return res.status(500).json({
             success: false,
             message: "An error occurred during updating wallet data",
+            error: error.message
+        });
+    }
+}
+
+
+export const getMyTransactionHistory = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        if(!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "User not login"
+            });
+        }
+        const wallet = await findWalletByUserId(userId);
+        if(!wallet) {
+            return res.status(400).json({
+                success: false,
+                message: "No wallet found"
+            });
+        }
+        
+        const history = await getAllHistory(wallet.id);
+        
+        return res.status(200).json({
+            success: true,
+            message: "P2P history retrieved successfully",
+            data: {
+                count: history.length,
+                transactions: history
+            }
+        });
+
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred during fetching wallet history",
+            error: error.message
+        });
+    }
+
+}
+
+export const getMyP2PTransactionHistory = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        if(!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "User not login"
+            });
+        }
+        const wallet = await findWalletByUserId(userId);
+        if(!wallet) {
+            return res.status(400).json({
+                success: false,
+                message: "No wallet found"
+            });
+        }
+
+        const history = await getP2PHistory(wallet.id);
+        
+        return res.status(200).json({
+            success: true,
+            message: "P2P history retrieved successfully",
+            data: {
+                count: history.length,
+                transactions: history
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred during fetching wallet history",
+            error: error.message
+        });
+    }
+}
+export const getMyCashTransactionHistory = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        if(!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "User not login"
+            });
+        }
+        const wallet = await findWalletByUserId(userId);
+        if(!wallet) {
+            return res.status(400).json({
+                success: false,
+                message: "No wallet found"
+            });
+        }
+        
+        const history = await getCashHistory(wallet.id);
+        
+        return res.status(200).json({
+            success: true,
+            message: "P2P history retrieved successfully",
+            data: {
+                count: history.length,
+                transactions: history
+            }
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred during fetching wallet history",
             error: error.message
         });
     }
