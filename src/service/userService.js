@@ -15,30 +15,42 @@ export const createUser = async (userInfo) => {
         });
 
     } catch (error) {
-        return error;
+        throw error;
     }
 }
 
 export const findUserByEmail = async (email) => {
-    return await db.user.findFirst({
-        where: {
-            email: email
-        }
-    });
+    try {
+        return await db.user.findFirst({
+            where: {
+                email: email
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
 }
 
 export const findUserByPhone = async (phone) => {
-    return await db.user.findFirst({
-        where: {
-            phone: phone
-        }
-    });
+    try {
+        return await db.user.findFirst({
+            where: {
+                phone: phone
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
 }
 
 export const findUserByID = async (id) => {
-    return await db.user.findFirst({
-        where: {
-            id: id
-        }
-    });
+    try {
+        return await db.user.findFirst({
+            where: {
+                id: id
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
 }

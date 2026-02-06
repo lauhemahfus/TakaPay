@@ -10,7 +10,7 @@ export const createWalletForUser = async (userId) => {
         });
 
     } catch (error) {
-        return error;
+        throw error;
     }
 }
 
@@ -23,6 +23,6 @@ export const findWalletByUserId = async (userId) => {
             }
         })
     } catch (error) {
-        return error;
+        throw error;
     }
 }

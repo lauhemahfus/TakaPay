@@ -5,3 +5,5 @@ logs/
 *.log
 prisma/*.db
 prisma/*.db-journal
+
+plan.md

@@ -30,7 +30,7 @@ export const creditUserWallet = async (walletId, amount, description) => {
         };
 
     } catch (error) {
-        return error;
+        throw error;
     }
 }
 
@@ -65,7 +65,7 @@ export const debitUserWallet = async (walletId, amount, description) => {
         };
 
     } catch (error) {
-        return error;
+        throw error;
     }
 }
 
@@ -106,7 +106,7 @@ export const transferMoney = async (senderWalletId, receiverWalletId, amount, de
             createAt: transaction.createdAt
         };
     } catch (error) {
-        return error;
+        throw error;
     }
     
 }
