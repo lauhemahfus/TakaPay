@@ -2,22 +2,24 @@ import { db } from "../config/prisma.js"
 
 export const creditUserWallet = async (walletId, amount, description) => {
     try {
-        const updateWallet = await db.wallet.update({
-            where: {
-                id: walletId,
-            },
-            data: {
-                balance: {increment: amount}
-            }
-        });
-        const transaction = await db.cashTransaction.create({
-            data: {
-                walletId: walletId,
-                amount: amount,
-                type: 'CASH_IN',
-                description: description 
-            }
-        });
+        const [updateWallet, transaction] = await db.$transaction([
+            db.wallet.update({
+                where: {
+                    id: walletId,
+                },
+                data: {
+                    balance: {increment: amount}
+                }
+            }),
+            db.cashTransaction.create({
+                data: {
+                    walletId: walletId,
+                    amount: amount,
+                    type: 'CASH_IN',
+                    description: description 
+                }
+            })
+        ]);
         
         return {
             transactionId: transaction.id,
@@ -37,22 +39,24 @@ export const creditUserWallet = async (walletId, amount, description) => {
 
 export const debitUserWallet = async (walletId, amount, description) => {
     try {
-        const updateWallet = await db.wallet.update({
-            where: {
-                id: walletId,
-            },
-            data: {
-                balance: {decrement: amount}
-            }
-        });
-        const transaction = await db.cashTransaction.create({
-            data: {
-                walletId: walletId,
-                amount: amount,
-                type: 'CASH_OUT',
-                description: description 
-            }
-        });
+        const [updateWallet, transaction] = await db.$transaction([
+            db.wallet.update({
+                where: {
+                    id: walletId,
+                },
+                data: {
+                    balance: {decrement: amount}
+                }
+            }),
+            db.cashTransaction.create({
+                data: {
+                    walletId: walletId,
+                    amount: amount,
+                    type: 'CASH_OUT',
+                    description: description 
+                }
+            })
+        ]);
         
         return {
             transactionId: transaction.id,
@@ -71,32 +75,32 @@ export const debitUserWallet = async (walletId, amount, description) => {
 
 export const transferMoney = async (senderWalletId, receiverWalletId, amount, description) => {
     try {
-        const updateSender = await db.wallet.update({
-            where: {
-                id: senderWalletId,
-            },
-            data: {
-                balance: {decrement: amount}
-            }
-        });
-        
-        const updateReceiver = await db.wallet.update({
-            where: {
-                id: receiverWalletId,
-            },
-            data: {
-                balance: {increment: amount}
-            }
-        });
-        
-        const transaction = await db.p2PTransaction.create({
-            data: {
-                senderWalletId: senderWalletId,
-                receiverWalletId: receiverWalletId,
-                amount: amount,
-                description: description 
-            }
-        });
+        const [updateSender, updateReceiver, transaction] = await db.$transaction([
+            db.wallet.update({
+                where: {
+                    id: senderWalletId,
+                },
+                data: {
+                    balance: {decrement: amount}
+                }
+            }),
+            db.wallet.update({
+                where: {
+                    id: receiverWalletId,
+                },
+                data: {
+                    balance: {increment: amount}
+                }
+            }),
+            db.p2PTransaction.create({
+                data: {
+                    senderWalletId: senderWalletId,
+                    receiverWalletId: receiverWalletId,
+                    amount: amount,
+                    description: description 
+                }
+            })
+        ]);
         
         return {
             transactionId: transaction.id,
