@@ -26,3 +26,18 @@ export const findWalletByUserId = async (userId) => {
         throw error;
     }
 }
+
+export const updateWalletStatus = async (walletId, status) => {
+    try {
+        return await db.wallet.update({
+            where: {
+                id: walletId
+            },
+            data: {
+                status: status
+            }
+        })
+    } catch (error) {
+        throw error;
+    }
+}

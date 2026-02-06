@@ -15,6 +15,13 @@ export const deposit = async (req, res, next) => {
         
         const wallet = await findWalletByUserId(user.id);
 
+        if(wallet.status !== 'ACTIVE'){
+            return res.status(403).json({
+                success: false,
+                message: "Wallet is not active"
+            });
+        }
+
         const transaction = await creditUserWallet(wallet.id, amount, description);
         
         return res.status(200).json({
@@ -54,6 +61,13 @@ export const withdraw = async(req, res, next) => {
         
         const wallet = await findWalletByUserId(userId);
 
+        if(wallet.status !== 'ACTIVE'){
+            return res.status(403).json({
+                success: false,
+                message: "Wallet is not active"
+            });
+        }
+
         if(wallet.balance < amount){
             return res.status(400).json({
                 success: false,
@@ -85,7 +99,6 @@ export const withdraw = async(req, res, next) => {
 }
 
 
-
 export const transfer = async(req, res, next) => {
     try {
         const senderUserId = req.user.id;
@@ -97,6 +110,13 @@ export const transfer = async(req, res, next) => {
             });
         }
         const senderWallet = await findWalletByUserId(senderUserId);
+
+        if(senderWallet.status !== 'ACTIVE'){
+            return res.status(403).json({
+                success: false,
+                message: "Sender wallet is not active"
+            });
+        }
 
         if(senderWallet.balance < amount){
             return res.status(400).json({
@@ -113,6 +133,14 @@ export const transfer = async(req, res, next) => {
             });
         }
         const receiverWallet = await findWalletByUserId(receiver.id);
+
+        if(receiverWallet.status !== 'ACTIVE'){
+            return res.status(403).json({
+                success: false,
+                message: "Receiver wallet is not active"
+            });
+        }
+        
         if(!receiverWallet){
             return res.status(404).json({
                 success: false,
