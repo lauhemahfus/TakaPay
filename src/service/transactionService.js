@@ -109,8 +109,4 @@ export const transferMoney = async (senderWalletId, receiverWalletId, amount, de
         return error;
     }
     
-    
-
-
-
 }

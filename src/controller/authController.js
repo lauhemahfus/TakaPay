@@ -58,7 +58,7 @@ export const login = async (req, res) => {
             });
         }
 
-        if(verifyPassword(user.password, password)){
+        if(await verifyPassword(user.password, password)){
             return res.status(200).json({
                 success: true,
                 message: "Login successful",
