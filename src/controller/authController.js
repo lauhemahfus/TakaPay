@@ -1,3 +1,4 @@
+import { db } from "../config/prisma.js";
 import { createUser, findUserByEmail, findUserByID } from "../service/userService.js";
 import { createWalletForUser } from "../service/walletService.js";
 import { generateToken } from "../utils/jwt.js";
@@ -14,20 +15,25 @@ export const register = async (req, res) => {
                 message: "All fields are required"
             });
         }
-
-        const user = await createUser({name, email, phone, password});
-        const wallet = await createWalletForUser(user.id);
+        const result = await db.$transaction(async (tx) => {
+            const user = await createUser({name, email, phone, password}, tx);
+            const wallet = await createWalletForUser(user.id, tx);
+            return {user, wallet};
+        }, {
+            timeout: 10000, 
+            maxWait: 5000  
+        });
         
         return res.status(201).json({
             success: true,
             message: "Signup successful",
             user: {
-                id: user.id,
-                wallet_id: wallet.id,
-                name: user.name,
-                email: user.email,
-                phone: user.phone,
-                createdAt: user.createdAt,
+                id: result.user.id,
+                wallet_id: result.wallet.id,
+                name: result.user.name,
+                email: result.user.email,
+                phone: result.user.phone,
+                createdAt: result.user.createdAt,
             }
         });
     } catch (error) {

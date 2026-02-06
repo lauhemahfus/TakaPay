@@ -1,9 +1,9 @@
 import { db } from "../config/prisma.js";
 
-export const createWalletForUser = async (userId) => {
+export const createWalletForUser = async (userId, tx = db) => {
     try {
         
-        return await db.wallet.create({
+        return await tx.wallet.create({
             data:{
                 userId: userId
             }

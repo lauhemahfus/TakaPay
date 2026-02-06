@@ -1,11 +1,11 @@
 import { db } from "../config/prisma.js";
 import { hashPassword } from "../utils/password.js";
 
-export const createUser = async (userInfo) => {
+export const createUser = async (userInfo, tx = db) => {
     try {
         const hashedPassword = await hashPassword(userInfo.password);
         
-        return db.user.create({
+        return tx.user.create({
             data:{
                 name: userInfo.name,
                 email: userInfo.email,
